@@ -37,7 +37,7 @@ public final class SquaremapHook {
 
             mapWorld.layerRegistry().register(PLAYER_RADIUS_LAYER, provider);
             final SquaremapTask task = new SquaremapTask(mapWorld, worldConfig, provider);
-            task.runTaskTimer(this.plugin, 0, 20L * Config.updateInterval);
+            task.runTaskTimer(this.plugin, 0, Config.updateInterval);
             this.tasks.put(mapWorld.identifier(), task);
         }
     }

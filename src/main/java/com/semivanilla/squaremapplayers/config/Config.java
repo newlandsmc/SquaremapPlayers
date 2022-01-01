@@ -106,7 +106,7 @@ public class Config {
         return new Color(rgb);
     }
 
-    public static int updateInterval = 30;
+    public static int updateInterval = 300;
     public static int radius = 250;
     private static void baseSettings() {
         updateInterval = getInt("update-interval", updateInterval);
