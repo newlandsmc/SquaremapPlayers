@@ -63,10 +63,10 @@ public final class SquaremapTask extends BukkitRunnable {
             players.put(uuid, wrapper);
         }
         int x = loc.getBlockX();
-        int y = loc.getBlockY();
+        int z = loc.getBlockZ();
         double playerRad = (float)Config.radius / 2;
         double randomX = ThreadLocalRandom.current().nextDouble(x - playerRad, x + playerRad);
-        double randomY = ThreadLocalRandom.current().nextDouble(y - playerRad, y + playerRad);
+        double randomY = ThreadLocalRandom.current().nextDouble(z - playerRad, z + playerRad);
         Point point = Point.point(randomX, randomY);
         Circle circle = Circle.circle(point, Config.radius);
 
