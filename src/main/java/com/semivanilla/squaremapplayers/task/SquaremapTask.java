@@ -23,6 +23,7 @@ public final class SquaremapTask extends BukkitRunnable {
     private final WorldConfig worldConfig;
     private final Map<UUID, PlayerWrapper> players;
     private static final String BOUNTY_META = "bounty";
+    private static final int MIN_RADIUS = 10;
 
     private boolean stop;
 
@@ -111,9 +112,13 @@ public final class SquaremapTask extends BukkitRunnable {
         }
         int x = loc.getBlockX();
         int z = loc.getBlockZ();
-        int killRadius = Config.radius - killCount*Config.radiusDemultiplier;
-        if(killRadius < 10)
-            killRadius = 10;
+        int multiplier = killCount*Config.radiusDemultiplier;
+        int killRadius = Config.radius;
+        if(multiplier < Config.radius){
+            killRadius = Config.radius-multiplier;
+        }else {
+            killRadius = MIN_RADIUS;
+        }
         double playerRad = (float)killRadius / 2;
         double randomX = ThreadLocalRandom.current().nextDouble(x - playerRad, x + playerRad);
         double randomY = ThreadLocalRandom.current().nextDouble(z - playerRad, z + playerRad);
