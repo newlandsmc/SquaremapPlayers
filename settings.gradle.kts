@@ -13,6 +13,9 @@ dependencyResolutionManagement {
                 includeGroup("xyz.jpenilla")
             }
         }
+        maven { // Configurate
+            url = uri("https://repo.spongepowered.org/maven")
+        }
     }
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
 }

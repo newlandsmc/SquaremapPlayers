@@ -1,9 +1,13 @@
 package com.semivanilla.squaremapplayers.config;
 
+import com.google.common.base.Throwables;
 import com.semivanilla.squaremapplayers.SquaremapPlayers;
 import org.bukkit.Bukkit;
-import org.bukkit.configuration.InvalidConfigurationException;
-import org.bukkit.configuration.file.YamlConfiguration;
+import org.spongepowered.configurate.ConfigurationNode;
+import org.spongepowered.configurate.ConfigurationOptions;
+import org.spongepowered.configurate.serialize.SerializationException;
+import org.spongepowered.configurate.yaml.NodeStyle;
+import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
 
 import java.awt.*;
 import java.io.File;
@@ -11,27 +15,47 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.util.regex.Pattern;
 
 @SuppressWarnings("unused")
 public class Config {
+
+    private static final Pattern PATH_PATTERN = Pattern.compile("\\.");
+    private static final String HEADER = "";
+
     private static File CONFIG_FILE;
-    static YamlConfiguration CONFIG;
+    public static ConfigurationNode config;
+    public static YamlConfigurationLoader configLoader;
     static int VERSION;
 
     public static void reload() {
-        CONFIG_FILE = new File(SquaremapPlayers.getInstance().getDataFolder(), "config.yml");
-        CONFIG = new YamlConfiguration();
+        CONFIG_FILE = new File(SquaremapPlayers.getInstance().getDataFolder(), "config.conf");
+        configLoader = YamlConfigurationLoader.builder()
+                .file(CONFIG_FILE)
+                .nodeStyle(NodeStyle.BLOCK)
+                .build();
+        if (!CONFIG_FILE.getParentFile().exists()) {
+            if(!CONFIG_FILE.getParentFile().mkdirs()) {
+                return;
+            }
+        }
+        if (!CONFIG_FILE.exists()) {
+            try {
+                if(!CONFIG_FILE.createNewFile()) {
+                    return;
+                }
+            } catch (IOException error) {
+                error.printStackTrace();
+            }
+        }
         try {
-            CONFIG.load(CONFIG_FILE);
-        } catch (IOException ignore) {
-        } catch (InvalidConfigurationException ex) {
+            config = configLoader.load(ConfigurationOptions.defaults().shouldCopyDefaults(false));
+        } catch (IOException ex) {
             Bukkit.getLogger().severe("Could not load config.yml, please correct your syntax errors");
             throw new RuntimeException(ex);
         }
-        CONFIG.options().copyDefaults(true);
 
         VERSION = getInt("config-version", 1);
-        set("config-version", 1);
 
         readConfig(Config.class, null);
 
@@ -54,43 +78,61 @@ public class Config {
                 }
             }
         }
+        saveConfig();
+    }
 
+    public static void saveConfig() {
         try {
-            CONFIG.save(CONFIG_FILE);
+            configLoader.save(config);
         } catch (IOException ex) {
-            Bukkit.getLogger().severe("Could not save " + CONFIG_FILE);
-            ex.printStackTrace();
+            throw Throwables.propagate(ex.getCause());
         }
     }
 
-    private static void set(String path, Object val) {
-        CONFIG.addDefault(path, val);
-        CONFIG.set(path, val);
+    private static Object[] splitPath(String key) {
+        return PATH_PATTERN.split(key);
+    }
+
+    private static void set(String path, Object def) {
+        if(config.node(splitPath(path)).virtual()) {
+            try {
+                config.node(splitPath(path)).set(def);
+            } catch (SerializationException ignore) {
+            }
+        }
+    }
+
+    private static void setString(String path, String def) {
+        try {
+            if(config.node(splitPath(path)).virtual())
+                config.node(splitPath(path)).set(io.leangen.geantyref.TypeToken.get(String.class), def);
+        } catch(SerializationException ignore) {
+        }
     }
 
     private static String getString(String path, String def) {
-        CONFIG.addDefault(path, def);
-        return CONFIG.getString(path, CONFIG.getString(path));
+        setString(path, def);
+        return config.node(splitPath(path)).getString(def);
     }
 
     private static boolean getBoolean(String path, boolean def) {
-        CONFIG.addDefault(path, def);
-        return CONFIG.getBoolean(path, CONFIG.getBoolean(path));
+        set(path, def);
+        return config.node(splitPath(path)).getBoolean(def);
     }
 
     private static int getInt(String path, int def) {
-        CONFIG.addDefault(path, def);
-        return CONFIG.getInt(path, CONFIG.getInt(path));
+        set(path, def);
+        return config.node(splitPath(path)).getInt(def);
     }
 
     private static double getDouble(String path, double def) {
-        CONFIG.addDefault(path, def);
-        return CONFIG.getDouble(path, CONFIG.getDouble(path));
+        set(path, def);
+        return config.node(splitPath(path)).getDouble(def);
     }
 
     private static Color getColor(String path, Color def) {
-        CONFIG.addDefault(path, colorToHex(def));
-        return hexToColor(CONFIG.getString(path, CONFIG.getString(path)));
+        set(path, colorToHex(def));
+        return hexToColor(config.node(splitPath(path)).getString(colorToHex(def)));
     }
 
     private static String colorToHex(final Color color) {

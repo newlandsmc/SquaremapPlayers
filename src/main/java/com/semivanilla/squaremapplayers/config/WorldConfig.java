@@ -1,14 +1,18 @@
 package com.semivanilla.squaremapplayers.config;
 
+import org.spongepowered.configurate.serialize.SerializationException;
 import xyz.jpenilla.squaremap.api.MapWorld;
 import xyz.jpenilla.squaremap.api.WorldIdentifier;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 @SuppressWarnings("unused")
 public class WorldConfig {
+
+    private static final Pattern PATH_PATTERN = Pattern.compile("\\.");
+
     private static final Map<WorldIdentifier, WorldConfig> configs = new HashMap<xyz.jpenilla.squaremap.api.WorldIdentifier, WorldConfig>();
 
     public static void reload() {
@@ -24,10 +28,12 @@ public class WorldConfig {
         return config;
     }
 
-    private final String worldName;
+    private final String configPath;
+    private final String defaultPath;
 
     public WorldConfig(MapWorld world) {
-        this.worldName = world.name();
+        this.defaultPath = "world-settings.default.";
+        this.configPath = "world-settings." + world.name() + ".";
         init();
     }
 
@@ -35,34 +41,35 @@ public class WorldConfig {
         Config.readConfig(WorldConfig.class, this);
     }
 
-    private void set(String path, Object val) {
-        Config.CONFIG.addDefault("world-settings.default." + path, val);
-        Config.CONFIG.set("world-settings.default." + path, val);
-        if (Config.CONFIG.get("world-settings." + worldName + "." + path) != null) {
-            Config.CONFIG.addDefault("world-settings." + worldName + "." + path, val);
-            Config.CONFIG.set("world-settings." + worldName + "." + path, val);
+    public static Object[] splitPath(String key) {
+        return PATH_PATTERN.split(key);
+    }
+
+    private static void set(String path, Object def) {
+        if(Config.config.node(splitPath(path)).virtual()) {
+            try {
+                Config.config.node(splitPath(path)).set(def);
+            } catch (SerializationException ex) {
+            }
         }
     }
 
     private boolean getBoolean(String path, boolean def) {
-        Config.CONFIG.addDefault("world-settings.default." + path, def);
-        return Config.CONFIG.getBoolean("world-settings." + worldName + "." + path, Config.CONFIG.getBoolean("world-settings.default." + path));
+        set(defaultPath + path, def);
+        return Config.config.node(splitPath(configPath+path)).getBoolean(
+                Config.config.node(splitPath(defaultPath +path)).getBoolean(def));
     }
 
     private int getInt(String path, int def) {
-        Config.CONFIG.addDefault("world-settings.default." + path, def);
-        return Config.CONFIG.getInt("world-settings." + worldName + "." + path, Config.CONFIG.getInt("world-settings.default." + path));
+        set(defaultPath + path, def);
+        return Config.config.node(splitPath(configPath+path)).getInt(
+                Config.config.node(splitPath(defaultPath +path)).getInt(def));
     }
 
     private String getString(String path, String def) {
-        Config.CONFIG.addDefault("world-settings.default." + path, def);
-        return Config.CONFIG.getString("world-settings." + worldName + "." + path, Config.CONFIG.getString("world-settings.default." + path));
-    }
-
-    <T> List<?> getList(String path, T def) {
-        Config.CONFIG.addDefault("world-settings.default." + path, def);
-        return Config.CONFIG.getList("world-settings." + worldName + "." + path,
-                Config.CONFIG.getList("world-settings.default." + path));
+        set(defaultPath + path, def);
+        return Config.config.node(splitPath(configPath+path)).getString(
+                Config.config.node(splitPath(defaultPath +path)).getString(def));
     }
 
     public boolean enabled = true;
