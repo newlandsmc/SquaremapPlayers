@@ -3,6 +3,7 @@ package com.semivanilla.squaremapplayers.config;
 import com.google.common.base.Throwables;
 import com.semivanilla.squaremapplayers.SquaremapPlayers;
 import org.bukkit.Bukkit;
+import org.checkerframework.checker.units.qual.C;
 import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.ConfigurationOptions;
 import org.spongepowered.configurate.serialize.SerializationException;
@@ -162,6 +163,15 @@ public class Config {
     public static double fillOpacity = 0.2D;
     public static String hoverTooltip = "";
     public static String clickTooltip = "";
+
+    public static Color bountyColor = Color.RED;
+    public static int bountyWeight = 1;
+    public static double bountyOpacity = 1.0D;
+    public static Color bountyFillColor = Color.ORANGE;
+    public static double bountyFillOpacity = 0.2D;
+    public static String bountyHoverToolTip = "";
+    public static String bountyClickTooltip = "";
+
     private static void marketSettings() {
         color = getColor("marker.color", color);
         weight = getInt("marker.weight", weight);
@@ -170,6 +180,14 @@ public class Config {
         fillOpacity = getDouble("marker.fill-opacity", fillOpacity);
         hoverTooltip = getString("marker.hover-tooltip", hoverTooltip);
         clickTooltip = getString("marker.click-tooltip", clickTooltip);
+
+        bountyColor = getColor("bounty.color",bountyColor);
+        bountyWeight = getInt("bounty.weight", bountyWeight);
+        bountyOpacity = getDouble("bounty.opacity", bountyOpacity);
+        bountyFillColor = getColor("bounty.fill-color", bountyFillColor);
+        bountyFillOpacity = getDouble("bounty.fill-opacity", bountyFillOpacity);
+        bountyHoverToolTip = getString("bounty.hover-tooltip", bountyHoverToolTip);
+        bountyClickTooltip = getString("bounty.click-tooltip", bountyClickTooltip);
     }
 
 }
