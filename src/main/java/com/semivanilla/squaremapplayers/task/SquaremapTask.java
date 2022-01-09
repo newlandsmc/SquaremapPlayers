@@ -22,6 +22,7 @@ public final class SquaremapTask extends BukkitRunnable {
     private final SimpleLayerProvider provider;
     private final WorldConfig worldConfig;
     private final Map<UUID, PlayerWrapper> players;
+    private static final String BOUNTY_META = "bounty";
 
     private boolean stop;
 
@@ -44,7 +45,9 @@ public final class SquaremapTask extends BukkitRunnable {
             if (worldConfig.hideVanished && (player.getGameMode() == GameMode.SPECTATOR || isVanished(player))) {
                 continue;
             }
-            this.handlePlayer(player, player.getLocation());
+            if(isBounty(player))
+                handleBountyPlayer(player,player.getLocation());
+            else this.handlePlayer(player, player.getLocation());
         }
     }
 
@@ -91,6 +94,53 @@ public final class SquaremapTask extends BukkitRunnable {
         wrapper.setLocation(loc); wrapper.setMarker(circle); wrapper.setMarkerid(markerid);
     }
 
+    private void handleBountyPlayer(Player player, Location loc) {
+        final UUID uuid = player.getUniqueId();
+        final int killCount = player.getMetadata(BOUNTY_META).get(0).asInt();
+        final String markerid = "player_" + player.getName() + "_id_" + uuid;
+        PlayerWrapper wrapper = players.get(uuid);
+        if (wrapper != null) {
+            if (loc.distanceSquared(wrapper.getLocation()) < worldConfig.updateRadius * worldConfig.updateRadius) {
+                this.provider.addMarker(Key.of(wrapper.getMarkerid()), wrapper.getMarker());
+                return;
+            }
+        }
+        if (wrapper == null) {
+            wrapper = new PlayerWrapper(player);
+            players.put(uuid, wrapper);
+        }
+        int x = loc.getBlockX();
+        int z = loc.getBlockZ();
+        int killRadius = Config.radius - killCount*Config.radiusDemultiplier;
+        if(killRadius < 10)
+            killRadius = 10;
+        double playerRad = (float)killRadius / 2;
+        double randomX = ThreadLocalRandom.current().nextDouble(x - playerRad, x + playerRad);
+        double randomY = ThreadLocalRandom.current().nextDouble(z - playerRad, z + playerRad);
+        Point point = Point.point(randomX, randomY);
+        Circle circle = Circle.circle(point, killRadius);
+
+        MarkerOptions.Builder options = MarkerOptions.builder()
+                .strokeColor(Config.bountyColor)
+                .strokeWeight(Config.bountyWeight)
+                .strokeOpacity(Config.bountyOpacity)
+                .fillColor(Config.bountyFillColor)
+                .fillOpacity(Config.bountyFillOpacity);
+
+        if (!Config.hoverTooltip.isBlank()) { // TODO : placeholders if this is requested
+            options.hoverTooltip(Config.bountyHoverToolTip);
+        }
+
+        if (!Config.clickTooltip.isBlank()) { // TODO : placeholders if this is requested
+            options.clickTooltip(Config.bountyClickTooltip);
+        }
+
+        circle.markerOptions(options);
+
+        this.provider.addMarker(Key.of(markerid), circle);
+        wrapper.setLocation(loc); wrapper.setMarker(circle); wrapper.setMarkerid(markerid);
+    }
+
     public void disable() {
         this.cancel();
         this.stop = true;
@@ -102,6 +152,10 @@ public final class SquaremapTask extends BukkitRunnable {
             if (meta.asBoolean()) return true;
         }
         return false;
+    }
+
+    private boolean isBounty(Player player){
+        return player.hasMetadata(BOUNTY_META);
     }
 
 }
