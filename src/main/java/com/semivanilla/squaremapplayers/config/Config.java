@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.util.HashMap;
 import java.util.regex.Pattern;
 
 @SuppressWarnings("unused")
@@ -171,7 +172,7 @@ public class Config {
     public static double bountyFillOpacity = 0.2D;
     public static String bountyHoverToolTip = "";
     public static String bountyClickTooltip = "";
-    public static int radiusDemultiplier = 10;
+
 
     private static void marketSettings() {
         color = getColor("marker.color", color);
@@ -189,7 +190,7 @@ public class Config {
         bountyFillOpacity = getDouble("bounty.fill-opacity", bountyFillOpacity);
         bountyHoverToolTip = getString("bounty.hover-tooltip", bountyHoverToolTip);
         bountyClickTooltip = getString("bounty.click-tooltip", bountyClickTooltip);
-        radiusDemultiplier = getInt("bounty.radius-demultiplier",radiusDemultiplier);
+
     }
 
 }
