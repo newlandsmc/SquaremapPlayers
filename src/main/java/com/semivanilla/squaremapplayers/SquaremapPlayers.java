@@ -2,6 +2,7 @@ package com.semivanilla.squaremapplayers;
 
 import com.semivanilla.squaremapplayers.config.Config;
 import com.semivanilla.squaremapplayers.hook.SquaremapHook;
+import com.semivanilla.squaremapplayers.listener.BountyStatusChangeEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class SquaremapPlayers extends JavaPlugin {
@@ -15,6 +16,7 @@ public class SquaremapPlayers extends JavaPlugin {
         Config.reload();
         squaremapHook = new SquaremapHook(this);
         squaremapHook.load();
+        getServer().getPluginManager().registerEvents(new BountyStatusChangeEvent(this),this);
     }
 
     @Override
@@ -29,4 +31,7 @@ public class SquaremapPlayers extends JavaPlugin {
         return instance;
     }
 
+    public SquaremapHook getSquaremapHook() {
+        return squaremapHook;
+    }
 }

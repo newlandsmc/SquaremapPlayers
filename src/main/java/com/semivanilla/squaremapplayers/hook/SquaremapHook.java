@@ -7,6 +7,8 @@ import com.semivanilla.squaremapplayers.SquaremapPlayers;
 import com.semivanilla.squaremapplayers.config.Config;
 import com.semivanilla.squaremapplayers.config.WorldConfig;
 import com.semivanilla.squaremapplayers.task.SquaremapTask;
+import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 import xyz.jpenilla.squaremap.api.Key;
 import xyz.jpenilla.squaremap.api.MapWorld;
 import xyz.jpenilla.squaremap.api.SimpleLayerProvider;
@@ -45,5 +47,29 @@ public final class SquaremapHook {
     public void disable() {
         this.tasks.values().forEach(SquaremapTask::disable);
         this.tasks.clear();
+    }
+
+    public void updateStatusFor(@NotNull Player player,boolean newBounty){
+        for (MapWorld mapWorld : SquaremapProvider.get().mapWorlds()) {
+            System.out.println(mapWorld.identifier());
+            if(newBounty){
+                plugin.getServer().getScheduler().runTaskLater(plugin, new Runnable() {
+                    @Override
+                    public void run() {
+                        tasks.get(mapWorld.identifier()).handleBountyPlayer(player,player.getLocation(),true);
+                    }
+                },20);
+
+            }
+            else {
+                plugin.getServer().getScheduler().runTaskLater(plugin, new Runnable() {
+                    @Override
+                    public void run() {
+                        tasks.get(mapWorld.identifier()).handlePlayer(player, player.getLocation(),true);
+                    }
+                },20);
+
+            }
+        }
     }
 }

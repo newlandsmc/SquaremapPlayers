@@ -15,7 +15,7 @@ dependencies {
     compileOnly("io.papermc.paper:paper-api:1.18.1-R0.1-SNAPSHOT") // Paper
     compileOnly("xyz.jpenilla:squaremap-api:1.1.0-SNAPSHOT") // Squaremap
     shadow("org.spongepowered:configurate-yaml:4.1.2") // Configurate
-}
+    compileOnly(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))}
 
 tasks {
     runServer {
@@ -46,7 +46,7 @@ bukkit {
     apiVersion = "1.18"
     website = "https://github.com/SemiVanilla-MC/${rootProject.name}"
     authors = listOf("destro174")
-    depend = listOf("squaremap")
+    depend = listOf("squaremap", "Bounties")
 }
 
 fun gitCommit(): String {

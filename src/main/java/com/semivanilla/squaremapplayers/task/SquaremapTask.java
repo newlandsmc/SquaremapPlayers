@@ -47,16 +47,17 @@ public final class SquaremapTask extends BukkitRunnable {
                 continue;
             }
             if(isBounty(player))
-                handleBountyPlayer(player,player.getLocation());
-            else this.handlePlayer(player, player.getLocation());
+                handleBountyPlayer(player,player.getLocation(),false);
+            else this.handlePlayer(player, player.getLocation(),false);
         }
     }
 
-    private void handlePlayer(Player player, Location loc) {
+    public void handlePlayer(Player player, Location loc,boolean forceUpdate) {
+
         UUID uuid = player.getUniqueId();
         String markerid = "player_" + player.getName() + "_id_" + uuid;
         PlayerWrapper wrapper = players.get(uuid);
-        if (wrapper != null) {
+        if (!forceUpdate && wrapper != null) {
             if (loc.distanceSquared(wrapper.getLocation()) < worldConfig.updateRadius * worldConfig.updateRadius) {
                 this.provider.addMarker(Key.of(wrapper.getMarkerid()), wrapper.getMarker());
                 return;
@@ -95,13 +96,17 @@ public final class SquaremapTask extends BukkitRunnable {
         wrapper.setLocation(loc); wrapper.setMarker(circle); wrapper.setMarkerid(markerid);
     }
 
-    private void handleBountyPlayer(Player player, Location loc) {
+    public void handleBountyPlayer(Player player, Location loc, boolean forceUpdate) {
+        if(!isBounty(player)){
+            handlePlayer(player,player.getLocation(),true);
+        }
+
         final UUID uuid = player.getUniqueId();
         final int killRadius = player.getMetadata(BOUNTY_META).get(0).asInt();
         final String markerid = "player_" + player.getName() + "_id_" + uuid;
         PlayerWrapper wrapper = players.get(uuid);
         if (wrapper != null) {
-            if (loc.distanceSquared(wrapper.getLocation()) < worldConfig.updateRadius * worldConfig.updateRadius) {
+            if (!forceUpdate && loc.distanceSquared(wrapper.getLocation()) < worldConfig.updateRadius * worldConfig.updateRadius) {
                 this.provider.addMarker(Key.of(wrapper.getMarkerid()), wrapper.getMarker());
                 return;
             }
