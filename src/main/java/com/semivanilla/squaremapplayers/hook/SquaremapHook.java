@@ -49,7 +49,7 @@ public final class SquaremapHook {
         this.tasks.clear();
     }
 
-    public void updateStatusFor(@NotNull Player player,boolean newBounty){
+    public void updateStatusFor(@NotNull Player player, boolean newBounty){
         for (MapWorld mapWorld : SquaremapProvider.get().mapWorlds()) {
             System.out.println(mapWorld.identifier());
             if(newBounty){

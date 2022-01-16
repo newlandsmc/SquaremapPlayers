@@ -52,13 +52,13 @@ public final class SquaremapTask extends BukkitRunnable {
         }
     }
 
-    public void handlePlayer(Player player, Location loc,boolean forceUpdate) {
+    public void handlePlayer(Player player, Location loc, boolean forceUpdate) {
 
         UUID uuid = player.getUniqueId();
         String markerid = "player_" + player.getName() + "_id_" + uuid;
         PlayerWrapper wrapper = players.get(uuid);
         if (!forceUpdate && wrapper != null) {
-            if (loc.distanceSquared(wrapper.getLocation()) < worldConfig.updateRadius * worldConfig.updateRadius) {
+            if (loc.distanceSquared(wrapper.getLocation()) < worldConfig.updateRadius * worldConfig.updateRadius || worldConfig.persistVanished && (player.getGameMode() == GameMode.SPECTATOR || isVanished(player))) {
                 this.provider.addMarker(Key.of(wrapper.getMarkerid()), wrapper.getMarker());
                 return;
             }

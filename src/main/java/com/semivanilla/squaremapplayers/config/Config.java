@@ -183,7 +183,7 @@ public class Config {
         hoverTooltip = getString("marker.hover-tooltip", hoverTooltip);
         clickTooltip = getString("marker.click-tooltip", clickTooltip);
 
-        bountyColor = getColor("bounty.color",bountyColor);
+        bountyColor = getColor("bounty.color", bountyColor);
         bountyWeight = getInt("bounty.weight", bountyWeight);
         bountyOpacity = getDouble("bounty.opacity", bountyOpacity);
         bountyFillColor = getColor("bounty.fill-color", bountyFillColor);
