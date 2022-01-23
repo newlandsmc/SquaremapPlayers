@@ -58,9 +58,15 @@ public final class SquaremapTask extends BukkitRunnable {
         String markerid = "player_" + player.getName() + "_id_" + uuid;
         PlayerWrapper wrapper = players.get(uuid);
         if (!forceUpdate && wrapper != null) {
-            if (loc.distanceSquared(wrapper.getLocation()) < worldConfig.updateRadius * worldConfig.updateRadius || worldConfig.persistVanished && (player.getGameMode() == GameMode.SPECTATOR || isVanished(player))) {
+            if (worldConfig.persistVanished && (player.getGameMode() == GameMode.SPECTATOR || isVanished(player))) {
                 this.provider.addMarker(Key.of(wrapper.getMarkerid()), wrapper.getMarker());
                 return;
+            }
+            if (!player.getLocation().getWorld().getName().equals(wrapper.getLocation().getWorld().getName())) {
+                if (loc.distanceSquared(wrapper.getLocation()) < worldConfig.updateRadius * worldConfig.updateRadius) {
+                    this.provider.addMarker(Key.of(wrapper.getMarkerid()), wrapper.getMarker());
+                    return;
+                }
             }
         }
         if (wrapper == null) {
@@ -106,9 +112,11 @@ public final class SquaremapTask extends BukkitRunnable {
         final String markerid = "player_" + player.getName() + "_id_" + uuid;
         PlayerWrapper wrapper = players.get(uuid);
         if (wrapper != null) {
-            if (!forceUpdate && loc.distanceSquared(wrapper.getLocation()) < worldConfig.updateRadius * worldConfig.updateRadius) {
-                this.provider.addMarker(Key.of(wrapper.getMarkerid()), wrapper.getMarker());
-                return;
+            if (!player.getLocation().getWorld().getName().equals(wrapper.getLocation().getWorld().getName())) {
+                if (!forceUpdate && loc.distanceSquared(wrapper.getLocation()) < worldConfig.updateRadius * worldConfig.updateRadius) {
+                    this.provider.addMarker(Key.of(wrapper.getMarkerid()), wrapper.getMarker());
+                    return;
+                }
             }
         }
         if (wrapper == null) {
