@@ -3,7 +3,7 @@ rootProject.name = "SquaremapPlayers"
 dependencyResolutionManagement {
     repositories {
         mavenCentral()
-        mavenLocal()
+//        mavenLocal()
         maven { // Paper
             url = uri("https://papermc.io/repo/repository/maven-public/")
         }
