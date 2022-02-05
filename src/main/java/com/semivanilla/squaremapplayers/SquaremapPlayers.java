@@ -7,6 +7,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class SquaremapPlayers extends JavaPlugin {
 
+
     private static SquaremapPlayers instance;
     private SquaremapHook squaremapHook;
 
