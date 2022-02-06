@@ -17,6 +17,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.HashMap;
+import java.util.Map;
+import java.util.TreeSet;
 import java.util.regex.Pattern;
 
 @SuppressWarnings("unused")
@@ -104,6 +106,30 @@ public class Config {
         }
     }
 
+    private static <K, V> Map<K, V> getMap(String path, Map<K, V> def) {
+        set(path, def);
+        ConfigurationNode node = config.node(splitPath(path));
+        Map<K, V> map = new HashMap<>();
+        for (Map.Entry<Object, ? extends ConfigurationNode> entry : node.childrenMap().entrySet()) {
+            map.put((K)entry.getKey(), (V)entry.getValue());
+        }
+        return map;
+    }
+
+    private static Map<Integer, Integer> getIntegerMap(String path, Map<Integer, Integer> def) {
+        set(path, def);
+        ConfigurationNode node = config.node(splitPath(path));
+        Map<Integer, Integer> map = new HashMap<>();
+        for (Map.Entry<Object, ? extends ConfigurationNode> entry : node.childrenMap().entrySet()) {
+            try {
+                map.put(Integer.parseInt(entry.getKey().toString()), Integer.parseInt(entry.getValue().getString()));
+            } catch (NumberFormatException exception) {
+                // handle
+            }
+        }
+        return map;
+    }
+
     private static void setString(String path, String def) {
         try {
             if(config.node(splitPath(path)).virtual())
@@ -151,7 +177,7 @@ public class Config {
     }
 
     public static int updateInterval = 300;
-    public static int radius = 250;
+    public static int radius = 500;
     private static void baseSettings() {
         updateInterval = getInt("update-interval", updateInterval);
         radius = getInt("radius", radius);
@@ -173,6 +199,14 @@ public class Config {
     public static String bountyHoverToolTip = "";
     public static String bountyClickTooltip = "";
 
+    private static Map<Integer,Integer> killRadius = new HashMap<>(){{
+       put(1,450);
+       put(2,400);
+       put(3,350);
+       put(4,250);
+       put(5,150);
+    }};
+    private static TreeSet<Integer> killRadiusTreeMap = new TreeSet<>(killRadius.keySet().stream().toList());
 
     private static void marketSettings() {
         color = getColor("marker.color", color);
@@ -190,7 +224,15 @@ public class Config {
         bountyFillOpacity = getDouble("bounty.fill-opacity", bountyFillOpacity);
         bountyHoverToolTip = getString("bounty.hover-tooltip", bountyHoverToolTip);
         bountyClickTooltip = getString("bounty.click-tooltip", bountyClickTooltip);
+        killRadius = getIntegerMap("bounty.kill-radius", killRadius);
+        killRadiusTreeMap = new TreeSet<>(killRadius.keySet().stream().toList());
+    }
 
+    public static int getKillRadius(int kills){
+        if(killRadius.containsKey(kills))
+            return killRadius.get(kills);
+
+        else return killRadius.get(killRadiusTreeMap.lower(kills));
     }
 
 }

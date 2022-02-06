@@ -1,5 +1,7 @@
 package com.semivanilla.squaremapplayers.task;
 
+import com.semivanilla.bounties.model.Bounty;
+import com.semivanilla.squaremapplayers.SquaremapPlayers;
 import com.semivanilla.squaremapplayers.config.Config;
 import com.semivanilla.squaremapplayers.config.WorldConfig;
 import com.semivanilla.squaremapplayers.wrapper.PlayerWrapper;
@@ -14,6 +16,7 @@ import xyz.jpenilla.squaremap.api.marker.Circle;
 import xyz.jpenilla.squaremap.api.marker.MarkerOptions;
 
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ThreadLocalRandom;
@@ -121,7 +124,12 @@ public final class SquaremapTask extends BukkitRunnable {
         }
 
         final UUID uuid = player.getUniqueId();
-        final int killRadius = player.getMetadata(BOUNTY_META).get(0).asInt();
+
+        Optional<Bounty> bountyOptional = SquaremapPlayers.getInstance().getBountiesAPI().getBountyFor(player);
+        if(bountyOptional.isEmpty())
+            return;
+
+        final int killRadius = Config.getKillRadius(bountyOptional.get().getKilled());
         final String markerid = "player_" + player.getName() + "_id_" + uuid;
         PlayerWrapper wrapper = players.get(uuid);
         if (wrapper != null) {
@@ -178,7 +186,9 @@ public final class SquaremapTask extends BukkitRunnable {
     }
 
     private boolean isBounty(Player player){
-        return player.hasMetadata(BOUNTY_META);
+        if(SquaremapPlayers.getInstance().getBountiesAPI() != null)
+            return SquaremapPlayers.getInstance().getBountiesAPI().isPlayerOnlineBounty(player);
+        else return false;
     }
 
     private Point randomPoint(int x, int z, double radius) {

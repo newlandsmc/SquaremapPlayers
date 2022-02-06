@@ -1,15 +1,17 @@
 package com.semivanilla.squaremapplayers;
 
+import com.semivanilla.bounties.Bounties;
+import com.semivanilla.bounties.api.BountiesAPI;
 import com.semivanilla.squaremapplayers.config.Config;
 import com.semivanilla.squaremapplayers.hook.SquaremapHook;
-import com.semivanilla.squaremapplayers.listener.BountyStatusChangeEvent;
+import com.semivanilla.squaremapplayers.listener.BountyEvents;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class SquaremapPlayers extends JavaPlugin {
 
-
     private static SquaremapPlayers instance;
     private SquaremapHook squaremapHook;
+    private BountiesAPI bountiesAPI;
 
     @Override
     public void onEnable() {
@@ -17,7 +19,14 @@ public class SquaremapPlayers extends JavaPlugin {
         Config.reload();
         squaremapHook = new SquaremapHook(this);
         squaremapHook.load();
-        getServer().getPluginManager().registerEvents(new BountyStatusChangeEvent(this),this);
+        if(getServer().getPluginManager().isPluginEnabled("Bounties")){
+            try {
+                bountiesAPI = Bounties.getBountyAPI();
+                getServer().getPluginManager().registerEvents(new BountyEvents(this),this);
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     @Override
@@ -34,5 +43,9 @@ public class SquaremapPlayers extends JavaPlugin {
 
     public SquaremapHook getSquaremapHook() {
         return squaremapHook;
+    }
+
+    public BountiesAPI getBountiesAPI() {
+        return bountiesAPI;
     }
 }
