@@ -25,6 +25,7 @@ public class SquaremapPlayers extends JavaPlugin {
                 getServer().getPluginManager().registerEvents(new BountyEvents(this),this);
             } catch (IllegalAccessException e) {
                 e.printStackTrace();
+                getLogger().warning("Unable to hook with bounties. The plugin might not yet intialized!");
             }
         }
     }

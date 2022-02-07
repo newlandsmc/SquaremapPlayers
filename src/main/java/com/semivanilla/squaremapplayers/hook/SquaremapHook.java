@@ -51,7 +51,6 @@ public final class SquaremapHook {
 
     public void updateStatusFor(@NotNull Player player, boolean newBounty){
         for (MapWorld mapWorld : SquaremapProvider.get().mapWorlds()) {
-            System.out.println(mapWorld.identifier());
             if(newBounty){
                 plugin.getServer().getScheduler().runTaskLater(plugin, new Runnable() {
                     @Override
