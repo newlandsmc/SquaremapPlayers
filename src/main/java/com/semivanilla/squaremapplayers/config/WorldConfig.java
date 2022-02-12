@@ -1,6 +1,8 @@
 package com.semivanilla.squaremapplayers.config;
 
+import org.bukkit.World;
 import org.spongepowered.configurate.serialize.SerializationException;
+import xyz.jpenilla.squaremap.api.BukkitAdapter;
 import xyz.jpenilla.squaremap.api.MapWorld;
 import xyz.jpenilla.squaremap.api.WorldIdentifier;
 
@@ -33,7 +35,8 @@ public class WorldConfig {
 
     public WorldConfig(MapWorld world) {
         this.defaultPath = "world-settings.default.";
-        this.configPath = "world-settings." + world.name() + ".";
+        final World bWorld = BukkitAdapter.bukkitWorld(world);
+        this.configPath = "world-settings." + bWorld.getName() + ".";
         init();
     }
 
