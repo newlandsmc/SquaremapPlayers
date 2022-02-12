@@ -7,13 +7,10 @@ import com.semivanilla.squaremapplayers.SquaremapPlayers;
 import com.semivanilla.squaremapplayers.config.Config;
 import com.semivanilla.squaremapplayers.config.WorldConfig;
 import com.semivanilla.squaremapplayers.task.SquaremapTask;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import xyz.jpenilla.squaremap.api.Key;
-import xyz.jpenilla.squaremap.api.MapWorld;
-import xyz.jpenilla.squaremap.api.SimpleLayerProvider;
-import xyz.jpenilla.squaremap.api.SquaremapProvider;
-import xyz.jpenilla.squaremap.api.WorldIdentifier;
+import xyz.jpenilla.squaremap.api.*;
 
 public final class SquaremapHook {
     private static final Key PLAYER_RADIUS_LAYER = Key.of("PlayerRadius");

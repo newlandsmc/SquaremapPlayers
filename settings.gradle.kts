@@ -8,7 +8,7 @@ dependencyResolutionManagement {
             url = uri("https://papermc.io/repo/repository/maven-public/")
         }
         maven { // run paper plugin
-            url = uri("https://repo.jpenilla.xyz/snapshots/")
+            url = uri("https://s01.oss.sonatype.org/content/repositories/snapshots/")
             mavenContent {
                 snapshotsOnly()
                 includeGroup("xyz.jpenilla")
