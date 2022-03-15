@@ -9,7 +9,7 @@ plugins {
 }
 
 group = "com.semivanilla.squaremapplayers"
-version = "1.0.0-SNAPSHOT"
+version = "1.0.1-SNAPSHOT"
 
 dependencies {
     compileOnly("io.papermc.paper:paper-api:1.18.2-R0.1-SNAPSHOT") // Paper
