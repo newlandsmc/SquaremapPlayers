@@ -17,6 +17,9 @@ dependencyResolutionManagement {
         maven { // Configurate
             url = uri("https://repo.spongepowered.org/maven")
         }
+        maven {
+            url = uri("https://repo.alenalex.me/releases")
+        }
     }
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
 }

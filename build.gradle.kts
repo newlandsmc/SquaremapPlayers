@@ -12,11 +12,11 @@ group = "com.semivanilla.squaremapplayers"
 version = "1.0.0-SNAPSHOT"
 
 dependencies {
-    compileOnly("io.papermc.paper:paper-api:1.18.1-R0.1-SNAPSHOT") // Paper
+    compileOnly("io.papermc.paper:paper-api:1.18.2-R0.1-SNAPSHOT") // Paper
     compileOnly("xyz.jpenilla:squaremap-api:1.1.0-SNAPSHOT") // Squaremap
+    compileOnly("com.semivanilla:Bounties:2.3")
     shadow("org.spongepowered:configurate-yaml:4.1.2") // Configurate
     compileOnly(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
-//    compileOnly("com.semivanilla:Bounties:1.9")
 }
 
 tasks {

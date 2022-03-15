@@ -73,7 +73,7 @@ public final class SquaremapTask extends BukkitRunnable {
 
     public void handlePlayer(Player player, Location loc, boolean forceUpdate) {
         UUID uuid = player.getUniqueId();
-        String markerid = "player_" + player.getName() + "_id_" + uuid;
+        String markerid = "player_" + player.getName().replace("*","") + "_id_" + uuid;
         PlayerWrapper wrapper = players.get(uuid);
         if (!forceUpdate && wrapper != null) {
             if (worldConfig.persistVanished && (player.getGameMode() == GameMode.SPECTATOR || isVanished(player))) {
@@ -130,7 +130,7 @@ public final class SquaremapTask extends BukkitRunnable {
             return;
 
         final int killRadius = Config.getKillRadius(bountyOptional.get().getKilled());
-        final String markerid = "player_" + player.getName() + "_id_" + uuid;
+        final String markerid = "player_" + player.getName().replace("*","") + "_id_" + uuid;
         PlayerWrapper wrapper = players.get(uuid);
         if (wrapper != null) {
             if (loc.getWorld().getName().equals(wrapper.getLocation().getWorld().getName())) {
