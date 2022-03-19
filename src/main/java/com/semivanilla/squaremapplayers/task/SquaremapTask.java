@@ -65,6 +65,9 @@ public final class SquaremapTask extends BukkitRunnable {
             if (worldConfig.hideVanished && (player.getGameMode() == GameMode.SPECTATOR || isVanished(player))) {
                 continue;
             }
+            if (worldConfig.hideInvisible && player.isInvisible()) {
+                continue;
+            }
             if(isBounty(player))
                 handleBountyPlayer(player,player.getLocation(),false);
             else this.handlePlayer(player, player.getLocation(),false);

@@ -91,10 +91,12 @@ public class WorldConfig {
     }
 
     public boolean hideVanished = true;
+    public boolean hideInvisible = true;
     public boolean persistVanished = true;
     public int updateRadius = 4;
     private void playerSettings() {
         hideVanished = getBoolean("player.hide-vanished", hideVanished);
+        hideInvisible = getBoolean("player.hide-invisible", hideInvisible);
         persistVanished = getBoolean("player.persist-vanished", persistVanished);
         updateRadius = getInt("player.update-radius", updateRadius);
     }
