@@ -217,7 +217,7 @@ public class Config {
         fillOpacity = getDouble("marker.fill-opacity", fillOpacity);
         hoverTooltip = getString("marker.hover-tooltip", hoverTooltip);
         clickTooltip = getString("marker.click-tooltip", clickTooltip);
-        hideNonBountyPlayers = getBoolean("maker.hide-non-bounty-player", hideNonBountyPlayers);
+        hideNonBountyPlayers = getBoolean("marker.hide-non-bounty-player", hideNonBountyPlayers);
 
         bountyColor = getColor("bounty.color", bountyColor);
         bountyWeight = getInt("bounty.weight", bountyWeight);
