@@ -190,6 +190,7 @@ public class Config {
     public static double fillOpacity = 0.2D;
     public static String hoverTooltip = "";
     public static String clickTooltip = "";
+    public static Boolean hideNonBountyPlayers = false;
 
     public static Color bountyColor = Color.RED;
     public static int bountyWeight = 1;
@@ -216,6 +217,7 @@ public class Config {
         fillOpacity = getDouble("marker.fill-opacity", fillOpacity);
         hoverTooltip = getString("marker.hover-tooltip", hoverTooltip);
         clickTooltip = getString("marker.click-tooltip", clickTooltip);
+        hideNonBountyPlayers = getBoolean("maker.hide-non-bounty-player", hideNonBountyPlayers);
 
         bountyColor = getColor("bounty.color", bountyColor);
         bountyWeight = getInt("bounty.weight", bountyWeight);

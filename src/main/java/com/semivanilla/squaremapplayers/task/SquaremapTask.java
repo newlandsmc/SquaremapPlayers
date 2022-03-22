@@ -75,6 +75,7 @@ public final class SquaremapTask extends BukkitRunnable {
     }
 
     public void handlePlayer(Player player, Location loc, boolean forceUpdate) {
+        if (Config.hideNonBountyPlayers) return;
         UUID uuid = player.getUniqueId();
         String markerid = "player_" + player.getName() + "_id_" + uuid;
         PlayerWrapper wrapper = players.get(uuid);
