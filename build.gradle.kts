@@ -47,8 +47,9 @@ bukkit {
     version = "${rootProject.version}-${gitCommit()}"
     apiVersion = "1.18"
     website = "https://github.com/SemiVanilla-MC/${rootProject.name}"
-    authors = listOf("destro174")
-    depend = listOf("squaremap", "Bounties")
+    authors = listOf("SemiVanilla-MC")
+    depend = listOf("squaremap")
+    softDepend = listOf("Bounties")
 }
 
 fun gitCommit(): String {
